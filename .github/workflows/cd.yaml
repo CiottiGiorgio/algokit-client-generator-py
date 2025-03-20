@@ -13,6 +13,10 @@ on:
         type: boolean
         required: true
         default: true
+  workflow_call:
+    secrets:
+      TEST_PYPI_API_TOKEN:
+        required: true
 
 concurrency: release
 
@@ -45,6 +49,7 @@ jobs:
         with:
           # Fetch entire repository history so we can determine version number from it
           fetch-depth: 0
+          ref: "main"
 
       - name: Install poetry
         run: pipx install poetry
@@ -93,5 +98,6 @@ jobs:
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
+          user: '__token__'
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository-url: https://test.pypi.org/legacy/

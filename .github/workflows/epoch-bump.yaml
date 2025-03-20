@@ -1,0 +1,66 @@
+name: Bump to the next epoch
+
+on:
+  workflow_dispatch:
+    inputs:
+      production_release:
+        description: "Production release?"
+        type: boolean
+        required: true
+        default: true
+
+permissions:
+  contents: write
+  packages: read
+
+jobs:
+  setup-epoch-bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # Fetch entire repository history so we can determine version number from it
+          fetch-depth: 0
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: "poetry"
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root
+
+      - name: Retrieve latest major
+        run: |
+          MAJOR_VERSION=$(poetry run semantic-release print-version --current | cut -d . -f1)
+          echo "MAJOR_VERSION: $MAJOR_VERSION"
+          NEXT_EPOCH=$(( ((MAJOR_VERSION + 99) / 100) * 100 ))
+          echo "NEXT_EPOCH: $NEXT_EPOCH"
+          echo "ONE_BEFORE_EPOCH=$(( NEXT_EPOCH - 1 ))" >> $GITHUB_ENV
+          echo "ONE_BEFORE_EPOCH: $ONE_BEFORE_EPOCH"
+
+      - name: Set Git user as GitHub actions
+        run: git config --global user.email "actions@github.com" && git config --global user.name "github-actions"
+
+      - name: Create empty commit for version bump
+        run: |
+          git commit --allow-empty -m "chore: setting up for epoch ${{ env.ONE_BEFORE_EPOCH }}"
+          git tag -a "v${{ env.ONE_BEFORE_EPOCH }}.0.0" -m "Version ${{ env.ONE_BEFORE_EPOCH }}.0.0"
+          git commit --allow-empty -m "feat!: faking a breaking change"
+          git push --tags origin main
+
+  release:
+    name: Release Library
+    uses: ./.github/workflows/cd.yaml
+    needs: setup-epoch-bump
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
+      contents: write
+      packages: read
+    secrets:
+      TEST_PYPI_API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}

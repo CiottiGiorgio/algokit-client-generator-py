@@ -2,6 +2,20 @@
 
 <!--next-version-placeholder-->
 
+## v3.0.0 (2025-03-21)
+
+### Feature
+
+* Faking a breaking change ([`5c080a6`](https://github.com/CiottiGiorgio/algokit-client-generator-py/commit/5c080a6a7d011941f9bdd8da19499a84ca817b06))
+* Faking a breaking change ([`d9131b2`](https://github.com/CiottiGiorgio/algokit-client-generator-py/commit/d9131b2a6a864d2a9bb5e5b38f947237f0c16fd0))
+* Fake minor version bump ([`4564625`](https://github.com/CiottiGiorgio/algokit-client-generator-py/commit/456462528f520a9ce40fcc103935d2f9ce19af56))
+* Fake minor version bump ([`48c7bf0`](https://github.com/CiottiGiorgio/algokit-client-generator-py/commit/48c7bf0c99e03e543548a09254deff1a80406850))
+
+### Breaking
+
+* faking a breaking change ([`5c080a6`](https://github.com/CiottiGiorgio/algokit-client-generator-py/commit/5c080a6a7d011941f9bdd8da19499a84ca817b06))
+* faking a breaking change ([`d9131b2`](https://github.com/CiottiGiorgio/algokit-client-generator-py/commit/d9131b2a6a864d2a9bb5e5b38f947237f0c16fd0))
+
 ## v2.0.1 (2025-03-13)
 
 ### Fix
